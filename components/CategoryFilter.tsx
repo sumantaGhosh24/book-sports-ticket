@@ -1,0 +1,64 @@
+"use client";
+
+import {useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {getAllCategories} from "@/lib/actions/category.actions";
+import {formUrlQuery, removeKeysFromQuery} from "@/lib/utils";
+import {ICategory} from "@/lib/models/category.model";
+
+const CategoryFilter = () => {
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const getCategories = async () => {
+      const categoryList = await getAllCategories();
+      categoryList && setCategories(categoryList as ICategory[]);
+    };
+    getCategories();
+  }, []);
+
+  const onSelectCategory = (category: string) => {
+    let newUrl = "";
+    if (category && category !== "All") {
+      newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "category",
+        value: category,
+      });
+    } else {
+      newUrl = removeKeysFromQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["category"],
+      });
+    }
+    router.push(newUrl, {scroll: false});
+  };
+
+  return (
+    <Select onValueChange={(value: string) => onSelectCategory(value)}>
+      <SelectTrigger className="py-6 bg-gray-200">
+        <SelectValue placeholder="Category" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="All">All Categories</SelectItem>
+        {categories.map((category) => (
+          <SelectItem value={category.name} key={category._id}>
+            {category.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+};
+
+export default CategoryFilter;
