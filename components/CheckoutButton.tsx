@@ -4,7 +4,6 @@ import {SignedIn, SignedOut, useUser} from "@clerk/nextjs";
 import {useRouter} from "next/navigation";
 
 import {ISport} from "@/lib/models/sport.model";
-import {RAZORPAY_KEY} from "@/constants/config";
 
 import Checkout from "./Checkout";
 import Logo from "../public/logo.png";
@@ -25,7 +24,7 @@ const CheckoutButton = ({sport}: {sport: ISport}) => {
     });
     const order = await data.json();
     const options = {
-      key: RAZORPAY_KEY,
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
       name: "Book Sports Ticket",
       description: "Book your favorite match ticket.",
       currency: order.order.currency,

@@ -27,6 +27,9 @@ const Header = ({role}: {role: string}) => {
             <Button asChild className="rounded-full" size="lg">
               <Link href="/sign-in">Login</Link>
             </Button>
+            <Button asChild className="rounded-full" size="lg">
+              <Link href="/sign-up">Register</Link>
+            </Button>
           </SignedOut>
         </div>
       </div>
