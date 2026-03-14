@@ -53,6 +53,7 @@ const CheckoutButton = ({sport}: {sport: ISport}) => {
         }
       },
     };
+    // @ts-ignore
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
     paymentObject.on("payment.failed", function () {
