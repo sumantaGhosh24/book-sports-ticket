@@ -15,7 +15,6 @@ import User from "../models/user.model";
 import Category from "../models/category.model";
 import Sport from "../models/sport.model";
 import {connectToDatabase} from "../database";
-import {handleError} from "../utils";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({name: {$regex: name, $options: "i"}});
@@ -43,8 +42,8 @@ export async function createSport({userId, sport, path}: CreateSportParams) {
     });
     revalidatePath(path);
     return JSON.parse(JSON.stringify(newSport));
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to create sport: ${error.message}`);
   }
 }
 
@@ -54,8 +53,8 @@ export async function getSportById(sportId: string) {
     const sport = await populateSport(Sport.findById(sportId));
     if (!sport) throw new Error("Sport not found");
     return JSON.parse(JSON.stringify(sport));
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to get sport by id: ${error.message}`);
   }
 }
 
@@ -73,8 +72,8 @@ export async function updateSport({userId, sport, path}: UpdateSportParams) {
     );
     revalidatePath(path);
     return JSON.parse(JSON.stringify(updatedSport));
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to update sport: ${error.message}`);
   }
 }
 
@@ -83,8 +82,8 @@ export async function deleteSport({sportId, path}: DeleteSportParams) {
     await connectToDatabase();
     const deletedSport = await Sport.findByIdAndDelete(sportId);
     if (deletedSport) revalidatePath(path);
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to delete sport: ${error.message}`);
   }
 }
 
@@ -117,8 +116,8 @@ export async function getAllSports({
       data: JSON.parse(JSON.stringify(sports)),
       totalPages: Math.ceil(sportsCount / limit),
     };
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to get all sports: ${error.message}`);
   }
 }
 
@@ -141,8 +140,8 @@ export async function getSportsByUser({
       data: JSON.parse(JSON.stringify(sports)),
       totalPages: Math.ceil(sportsCount / limit),
     };
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to get sports by user: ${error.message}`);
   }
 }
 
@@ -166,7 +165,9 @@ export async function getRelatedSportsByCategory({
       data: JSON.parse(JSON.stringify(sports)),
       totalPages: Math.ceil(sportsCount / limit),
     };
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(
+      `Failed to get related sports by category: ${error.message}`
+    );
   }
 }

@@ -4,7 +4,6 @@ import {GetOrdersByUserParams} from "@/types";
 
 import {connectToDatabase} from "../database";
 import Order from "../models/order.model";
-import {handleError} from "../utils";
 import Sport from "../models/sport.model";
 import User from "../models/user.model";
 
@@ -38,8 +37,8 @@ export async function getOrdersByUser({
       data: JSON.parse(JSON.stringify(orders)),
       totalPages: Math.ceil(ordersCount / limit),
     };
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to get orders by user: ${error.message}`);
   }
 }
 
@@ -73,7 +72,7 @@ export async function getAllOrders({
       data: JSON.parse(JSON.stringify(orders)),
       totalPages: Math.ceil(ordersCount / limit),
     };
-  } catch (error) {
-    handleError(error);
+  } catch (error: any) {
+    throw new Error(`Failed to get all orders: ${error.message}`);
   }
 }
